@@ -75,16 +75,52 @@ Vagrant.configure("2") do |config|
   #   apt-get install -y apache2
   # SHELL
 
-  config.vm.define "k8s_master" do |k8s_master|
+  config.vm.define "k8s_master", primary: true do |k8s_master|
     k8s_master.vm.box = "ubuntu/jammy64"
+    
+    k8s_master.vm.provider "virtualbox" do |vb|
+      vb.memory = "4096"
+    end
+
+    k8s_master.vm.hostname = "k8smaster.local"
+    k8s_master.vm.network "public_network"
+
+    k8s_master.vm.provision "shell",
+      run: "always",
+      inline: "ip route del default via 10.0.2.2 || true"
+
   end
 
   config.vm.define "k8s_worker1" do |k8s_worker1|
     k8s_worker1.vm.box = "ubuntu/jammy64"
+
+    k8s_worker1.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+    end
+
+    k8s_worker1.vm.hostname = "k8sworker1.local"
+    k8s_worker1.vm.network "public_network"
+
+    k8s_worker1.vm.provision "shell",
+      run: "always",
+      inline: "ip route del default via 10.0.2.2 || true"
+
   end
 
   config.vm.define "k8s_worker2" do |k8s_worker2|
     k8s_worker2.vm.box = "ubuntu/jammy64"
+
+    k8s_worker2.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+    end
+
+    k8s_worker2.vm.hostname = "k8sworker2.local"
+    k8s_worker2.vm.network "public_network"
+
+    k8s_worker2.vm.provision "shell",
+      run: "always",
+      inline: "ip route del default via 10.0.2.2 || true"
+
   end
 
 end
